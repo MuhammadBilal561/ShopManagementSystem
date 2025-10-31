@@ -100,7 +100,9 @@ namespace ShopManagementSystem
                     matchedCustomers.Add(customer);
                 }
             }
-            return matchedCustomers;
+            //return matchedCustomers;
+            return _repoDB.FindByFirstChar(firstChar);
+
         }
 
         public CustomerModel FindCustomerByPhoneNumber(string phoneNumber)
