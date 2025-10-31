@@ -129,7 +129,9 @@ namespace ShopManagementSystem
                     matchedCustomers.Add(customer);
                 }
             }
-            return matchedCustomers;
+            //return matchedCustomers;
+            return _repoDB.FindByAddress(address);
+
         }
 
         public List<CustomerModel> FindCustomerByAge(int age)

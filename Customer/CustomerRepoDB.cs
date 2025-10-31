@@ -101,7 +101,7 @@ namespace ShopManagementSystem
         }
 
         public List<CustomerModel> FindByFirstChar(string firstChar)
-        { 
+        {
             List<CustomerModel> customers = new List<CustomerModel>();
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
@@ -121,7 +121,29 @@ namespace ShopManagementSystem
                 }
             }
             return customers;
+        }
 
+        public List<CustomerModel> FindByAddress(string address)
+        {
+            List<CustomerModel> customers = new List<CustomerModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Customer WHERE Address = @Address";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Address", address);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int customerID = Convert.ToInt32(reader["CustomerID"]);
+                    string name = reader["Name"].ToString();
+                    string phoneNumber = reader["PhoneNumber"].ToString();
+                    int age = Convert.ToInt32(reader["Age"]);
+                    string cAddress = reader["Address"].ToString();
+                    customers.Add(new CustomerModel(customerID, name, phoneNumber, age, cAddress));
+                }
+            }
+            return customers;
         }
     }
 }
