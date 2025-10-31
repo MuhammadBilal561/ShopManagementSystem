@@ -42,25 +42,27 @@ namespace ShopManagementSystem
         }
 
         public bool UpdateCustomer(
-            string originalName,
+            int CustomerID,
             string newName,
             string newPhone,
             int newAge,
             string newAddress
         )
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            List<CustomerModel> customers = _repoDB.GetAll();
 
             for (int i = 0; i < customers.Count; i++)
             {
-                if (customers[i].GetName() == originalName)
+                if (customers[i].GetCustomerID() == CustomerID)
                 {
                     customers[i].SetName(newName);
                     customers[i].SetPhoneNumber(newPhone);
                     customers[i].SetAge(newAge);
                     customers[i].SetAddress(newAddress);
                     customerRepository.SaveData(customers);
-                    return true;
+                    //return true;
+                    return _repoDB.Update(CustomerID, customers[i]);
                 }
             }
             return false;
@@ -102,7 +104,6 @@ namespace ShopManagementSystem
             }
             //return matchedCustomers;
             return _repoDB.FindByFirstChar(firstChar);
-
         }
 
         public CustomerModel FindCustomerByPhoneNumber(string phoneNumber)
@@ -131,7 +132,6 @@ namespace ShopManagementSystem
             }
             //return matchedCustomers;
             return _repoDB.FindByAddress(address);
-
         }
 
         public List<CustomerModel> FindCustomerByAge(int age)

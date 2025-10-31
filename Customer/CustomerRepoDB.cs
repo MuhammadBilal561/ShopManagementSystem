@@ -123,6 +123,33 @@ namespace ShopManagementSystem
             return customers;
         }
 
+        public bool Update(int customerID, CustomerModel updatedCustomer)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "UPDATE Customer SET Name = @Name, PhoneNumber = @PhoneNumber, Age = @Age, Address = @Address WHERE CustomerID = @CustomerID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", updatedCustomer.GetName());
+                    cmd.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.GetPhoneNumber());
+                    cmd.Parameters.AddWithValue("@Age", updatedCustomer.GetAge());
+                    cmd.Parameters.AddWithValue("@Address", updatedCustomer.GetAddress());
+                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
         public List<CustomerModel> FindByAddress(string address)
         {
             List<CustomerModel> customers = new List<CustomerModel>();

@@ -1,17 +1,3 @@
-Ali,00000,21,lahore
-hamza,22222222,23,lahore
-bilal,03233424,19,Lhr
-usman,031313131,20,lahore
-Omar,03248673910,22,Model Town Lahore
-Moeez,04201040242,45,Multan
-Hafeez,9323141411,18,Islamabad
-a,a,12,a
-b,3131,321,faf
-a,123,321,dsf
-dsf,23,12,sas
-a,243252523,21,lhr
-b,23214124,12,fegfeg
 ali,03103504141,18,lhr
-hamza,0502301301,21,mutlan
-usman,052030103,24,islamabad
+sabir,0321010401401,59,lahore
 moeez,039139131,31,mutlan

@@ -249,10 +249,10 @@ namespace ShopManagementSystem
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--UPDATE CUSTOMER--");
 
-            ConsoleHelper.WritePrompt("Enter the original Customer Name: ");
-            string originalName = Console.ReadLine();
+            ConsoleHelper.WritePrompt("Enter the  Customer ID: ");
+            int CustomerID = int.Parse(Console.ReadLine());
 
-            CustomerModel existingCustomer = customerService.FindCustomerByName(originalName);
+            CustomerModel existingCustomer = customerService.FindCustomerByID(CustomerID);
 
             if (existingCustomer == null)
             {
@@ -273,7 +273,7 @@ namespace ShopManagementSystem
             string newAddress = Console.ReadLine();
 
             bool updated = customerService.UpdateCustomer(
-                originalName,
+                CustomerID,
                 newName,
                 newPhone,
                 newAge,
