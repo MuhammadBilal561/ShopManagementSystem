@@ -18,6 +18,17 @@ namespace ShopManagementSystem
             customerRepository.SaveToFile(customer);
         }
 
+        public CustomerModel FindCustomerByID(int id)
+        {
+            List<CustomerModel> customers = _repoDB.GetAll();
+            foreach (var c in customers)
+            {
+                if (c.GetCustomerID() == id)
+                    return c;
+            }
+            return null;
+        }
+
         public CustomerModel FindCustomerByName(string name)
         {
             List<CustomerModel> customers = customerRepository.LoadCustomers();
@@ -54,16 +65,17 @@ namespace ShopManagementSystem
             return false;
         }
 
-        public bool DeleteCustomer(string name)
+        public bool DeleteCustomer(int id)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
+            List<CustomerModel> customers = _repoDB.GetAll();
 
             for (int i = 0; i < customers.Count; i++)
             {
-                if (customers[i].GetName() == name)
+                if (customers[i].GetCustomerID() == id)
                 {
+                    int deleteId = customers[i].GetCustomerID();
                     customers.RemoveAt(i);
-                    customerRepository.SaveData(customers);
+                    _repoDB.Delete(deleteId);
                     return true;
                 }
             }

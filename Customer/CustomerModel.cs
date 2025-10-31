@@ -4,7 +4,7 @@ namespace ShopManagementSystem
 {
     internal class CustomerModel
     {
-        private string CustomerID;
+        private int CustomerID;
         private string Name;
         private string PhoneNumber;
         private int Age;
@@ -18,7 +18,7 @@ namespace ShopManagementSystem
             this.Address = address;
         }
 
-        public CustomerModel(string customerID, string name, string phoneNumber, int age, string address)
+        public CustomerModel(int customerID, string name, string phoneNumber, int age, string address)
         {
             this.CustomerID = customerID;
             this.Name = name;
@@ -27,7 +27,7 @@ namespace ShopManagementSystem
             this.Address = address;
         }
 
-        public string GetCustomerID()
+        public int GetCustomerID()
         {
             return this.CustomerID;
         }
@@ -79,7 +79,7 @@ namespace ShopManagementSystem
 
         public override string ToString()
         {
-            return $"Name: {Name}, Phone: {PhoneNumber}, Age: {Age}, Address: {Address}";
+            return $"ID: {CustomerID}, Name: {Name}, Phone: {PhoneNumber}, Age: {Age}, Address: {Address}";
         }
     }
 }

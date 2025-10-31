@@ -295,10 +295,10 @@ namespace ShopManagementSystem
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--DELETE CUSTOMER--");
 
-            ConsoleHelper.WritePrompt("Enter Customer Name to delete: ");
-            string name = Console.ReadLine();
+            ConsoleHelper.WritePrompt("Enter Customer Id to delete: ");
+            int id = int.Parse(Console.ReadLine());
 
-            CustomerModel customer = customerService.FindCustomerByName(name);
+            CustomerModel customer = customerService.FindCustomerByID(id);
 
             if (customer == null)
             {
@@ -307,12 +307,14 @@ namespace ShopManagementSystem
             }
 
             ConsoleHelper.WriteInfo($"Found Customer: {customer.GetName()}");
-            ConsoleHelper.WritePrompt($"Are you sure you want to delete {name}? (Y/N): ");
+            ConsoleHelper.WritePrompt(
+                $"Are you sure you want to delete {customer.GetName()}? (Y/N): "
+            );
             string confirmation = Console.ReadLine().Trim().ToUpper();
 
             if (confirmation == "Y")
             {
-                bool deleted = customerService.DeleteCustomer(name);
+                bool deleted = customerService.DeleteCustomer(id);
 
                 if (deleted)
                 {

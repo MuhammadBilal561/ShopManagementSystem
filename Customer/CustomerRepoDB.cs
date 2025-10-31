@@ -35,6 +35,26 @@ namespace ShopManagementSystem
             }
         }
 
+        public bool Delete(int id)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "delete from customer where CustomerID = @CustomerID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerID", id);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
+        }
+
         public List<CustomerModel> GetAll()
         {
             List<CustomerModel> customers = new List<CustomerModel>();
@@ -46,7 +66,7 @@ namespace ShopManagementSystem
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    string customerID = reader["CustomerID"].ToString();
+                    int customerID = Convert.ToInt32(reader["CustomerID"]);
                     string name = reader["Name"].ToString();
                     string phoneNumber = reader["PhoneNumber"].ToString();
                     int age = Convert.ToInt32(reader["Age"]);
