@@ -31,7 +31,8 @@ namespace ShopManagementSystem
 
         public CustomerModel FindCustomerByName(string name)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            List<CustomerModel> customers = _repoDB.FindByName(name);
             foreach (var c in customers)
             {
                 if (c.GetName() == name)
@@ -88,7 +89,7 @@ namespace ShopManagementSystem
             return _repoDB.GetAll();
         }
 
-        public List<CustomerModel> SearchCustomerByFirstChar(string firstChar)
+        public List<CustomerModel> FindCustomerByFirstChar(string firstChar)
         {
             List<CustomerModel> customers = customerRepository.LoadCustomers();
             List<CustomerModel> matchedCustomers = new List<CustomerModel>();

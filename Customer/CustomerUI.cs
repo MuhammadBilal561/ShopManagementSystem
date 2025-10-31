@@ -106,7 +106,7 @@ namespace ShopManagementSystem
             ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY FIRST CHARACTER--");
             ConsoleHelper.WritePrompt("Enter the first character of Customer Name to search: ");
             string firstChar = Console.ReadLine();
-            List<CustomerModel> customers = customerService.SearchCustomerByFirstChar(firstChar);
+            List<CustomerModel> customers = customerService.FindCustomerByFirstChar(firstChar);
             if (customers.Count > 0)
             {
                 ConsoleHelper.WriteSuccess("Customers Found:");

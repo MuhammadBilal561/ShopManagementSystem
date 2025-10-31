@@ -76,5 +76,28 @@ namespace ShopManagementSystem
             }
             return customers;
         }
+
+        public List<CustomerModel> FindByName(string name)
+        {
+            List<CustomerModel> customers = new List<CustomerModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Customer WHERE Name LIKE @Name";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Name", name);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int customerID = Convert.ToInt32(reader["CustomerID"]);
+                    string cName = reader["Name"].ToString();
+                    string phoneNumber = reader["PhoneNumber"].ToString();
+                    int age = Convert.ToInt32(reader["Age"]);
+                    string address = reader["Address"].ToString();
+                    customers.Add(new CustomerModel(customerID, cName, phoneNumber, age, address));
+                }
+            }
+            return customers;
+        }
     }
 }
