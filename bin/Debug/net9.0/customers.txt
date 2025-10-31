@@ -3,3 +3,4 @@ hamza,22222222,23,lahore
 bilal,03233424,19,Lhr
 usman,031313131,20,lahore
 Omar,03248673910,22,Model Town Lahore
+Moeez,04201040242,45,Multan

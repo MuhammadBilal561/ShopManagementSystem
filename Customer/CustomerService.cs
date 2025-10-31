@@ -72,7 +72,8 @@ namespace ShopManagementSystem
 
         public List<CustomerModel> GetAllCustomers()
         {
-            return customerRepository.LoadCustomers();
+            //return customerRepository.LoadCustomers();
+            return _repoDB.GetAll();
         }
 
         public List<CustomerModel> SearchCustomerByFirstChar(string firstChar)

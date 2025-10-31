@@ -34,5 +34,27 @@ namespace ShopManagementSystem
                 }
             }
         }
+
+        public List<CustomerModel> GetAll()
+        {
+            List<CustomerModel> customers = new List<CustomerModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Customer";
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string customerID = reader["CustomerID"].ToString();
+                    string name = reader["Name"].ToString();
+                    string phoneNumber = reader["PhoneNumber"].ToString();
+                    int age = Convert.ToInt32(reader["Age"]);
+                    string address = reader["Address"].ToString();
+                    customers.Add(new CustomerModel(customerID, name, phoneNumber, age, address));
+                }
+            }
+            return customers;
+        }
     }
 }
