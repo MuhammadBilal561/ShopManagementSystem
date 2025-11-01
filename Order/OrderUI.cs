@@ -21,14 +21,16 @@ namespace ShopManagementSystem
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--- CREATE NEW SALE ---");
 
-            ConsoleHelper.WritePrompt("Enter customer name: ");
-            string customerName = Console.ReadLine();
+            ConsoleHelper.WritePrompt("Enter customer id: ");
+            int id = int.Parse(Console.ReadLine());
 
-            CustomerModel customer = customerService.FindCustomerByName(customerName);
+            CustomerModel customer = customerService.FindCustomerByID(id);
 
-            if (customer == null)
+            if (customer ==null)
             {
                 ConsoleHelper.WriteInfo("New customer. Please provide details:");
+                ConsoleHelper.WritePrompt("Enter Customer Name: ");
+                string name = Console.ReadLine();
                 ConsoleHelper.WritePrompt("Enter Phone Number: ");
                 string phone = Console.ReadLine();
                 ConsoleHelper.WritePrompt("Enter Age: ");
@@ -36,7 +38,7 @@ namespace ShopManagementSystem
                 ConsoleHelper.WritePrompt("Enter Address: ");
                 string address = Console.ReadLine();
 
-                customer = new CustomerModel(customerName, phone, age, address);
+                customer = new CustomerModel(name, phone, age, address);
                 customerService.AddCustomer(customer);
                 ConsoleHelper.WriteSuccess("New customer created and saved.");
             }

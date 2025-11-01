@@ -27,6 +27,5 @@ namespace ShopManagementSystem
             orderRepository.SaveOrders(existingOrders);
         }
 
-        // return list of name of all the customers who  got more thean three products and total price is more than 5000;
     }
 }

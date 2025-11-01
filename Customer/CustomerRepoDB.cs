@@ -204,7 +204,7 @@ namespace ShopManagementSystem
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
                 con.Open();
-                string query = "SELECT * FROM Customer WHERE TRIM(PhoneNumber) = @PhoneNumber";
+                string query = "SELECT * FROM Customer WHERE PhoneNumber = @PhoneNumber";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@PhoneNumber", phoneNo);
                 SqlDataReader reader = cmd.ExecuteReader();

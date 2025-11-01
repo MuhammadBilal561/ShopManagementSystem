@@ -19,8 +19,7 @@ namespace ShopManagementSystem
 
         public CustomerModel FindCustomerByID(int id)
         {
-            return dbRepo.FindByID(id); 
-
+            return dbRepo.FindByID(id);
         }
 
         public List<CustomerModel> FindCustomerByName(string name)

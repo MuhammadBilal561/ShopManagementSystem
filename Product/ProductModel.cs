@@ -5,6 +5,7 @@ namespace ShopManagementSystem
 {
     internal class ProductModel
     {
+       
         private string Name;
         private double PurchasePrice;
         private double SalePrice;
