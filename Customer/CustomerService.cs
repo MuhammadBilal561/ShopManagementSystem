@@ -123,31 +123,32 @@ namespace ShopManagementSystem
 
         public List<CustomerModel> FindCustomerByAddress(string address)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
-            List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            foreach (var customer in customers)
-            {
-                if (customer.GetAddress() == address)
-                {
-                    matchedCustomers.Add(customer);
-                }
-            }
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
+            //foreach (var customer in customers)
+            //{
+            //    if (customer.GetAddress() == address)
+            //    {
+            //        matchedCustomers.Add(customer);
+            //    }
+            //}
             //return matchedCustomers;
             return _repoDB.FindByAddress(address);
         }
 
         public List<CustomerModel> FindCustomerByAge(int age)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
-            List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            foreach (var customer in customers)
-            {
-                if (customer.GetAge() == age)
-                {
-                    matchedCustomers.Add(customer);
-                }
-            }
-            return matchedCustomers;
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
+            //foreach (var customer in customers)
+            //{
+            //    if (customer.GetAge() == age)
+            //    {
+            //        matchedCustomers.Add(customer);
+            //    }
+            //}
+            //return matchedCustomers;
+            return _repoDB.FindByAge(age);
         }
     }
 }
