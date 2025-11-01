@@ -1,20 +1,23 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 
 namespace ShopManagementSystem
 {
     internal class ProductService
     {
-        private ProductRepository productRepository;
-
-        public ProductService()
-        {
-            productRepository = new ProductRepository();
-        }
+        private ProductRepository productRepository = new ProductRepository();
+        //private ProductRepository fileRepo = new ProductRepository();
+        private ProductRepoDB dbRepo = new ProductRepoDB();
 
         public void AddProduct(ProductModel product)
         {
-            productRepository.SaveToFile(product);
+            bool dbResult = dbRepo.Create(product);
+            if (dbResult)
+            {
+                //file backup
+                productRepository.SaveToFile(product);
+            }
         }
 
         public ProductModel FindProductByName(string name)

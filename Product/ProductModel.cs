@@ -5,7 +5,7 @@ namespace ShopManagementSystem
 {
     internal class ProductModel
     {
-       
+        private int ProductID;
         private string Name;
         private double PurchasePrice;
         private double SalePrice;
@@ -17,6 +17,11 @@ namespace ShopManagementSystem
             this.PurchasePrice = purchasePrice;
             this.SalePrice = salePrice;
             this.Discount = discount;
+        }
+
+        public int GetID()
+        {
+            return this.ProductID;
         }
 
         public string GetName()
