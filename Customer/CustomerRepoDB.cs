@@ -77,6 +77,33 @@ namespace ShopManagementSystem
             return customers;
         }
 
+        public bool Update(int customerID, CustomerModel updatedCustomer)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "UPDATE Customer SET Name = @Name, PhoneNumber = @PhoneNumber, Age = @Age, Address = @Address WHERE CustomerID = @CustomerID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", updatedCustomer.GetName());
+                    cmd.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.GetPhoneNumber());
+                    cmd.Parameters.AddWithValue("@Age", updatedCustomer.GetAge());
+                    cmd.Parameters.AddWithValue("@Address", updatedCustomer.GetAddress());
+                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
         public List<CustomerModel> FindByName(string name)
         {
             List<CustomerModel> customers = new List<CustomerModel>();
@@ -123,33 +150,6 @@ namespace ShopManagementSystem
             return customers;
         }
 
-        public bool Update(int customerID, CustomerModel updatedCustomer)
-        {
-            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
-            {
-                con.Open();
-                string query =
-                    "UPDATE Customer SET Name = @Name, PhoneNumber = @PhoneNumber, Age = @Age, Address = @Address WHERE CustomerID = @CustomerID";
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@Name", updatedCustomer.GetName());
-                    cmd.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.GetPhoneNumber());
-                    cmd.Parameters.AddWithValue("@Age", updatedCustomer.GetAge());
-                    cmd.Parameters.AddWithValue("@Address", updatedCustomer.GetAddress());
-                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
         public List<CustomerModel> FindByAddress(string address)
         {
             List<CustomerModel> customers = new List<CustomerModel>();
@@ -171,6 +171,29 @@ namespace ShopManagementSystem
                 }
             }
             return customers;
+        }
+
+        public CustomerModel FindByPhoneNo(string phoneNo)
+        {
+            CustomerModel customer = null;
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Customer WHERE PhoneNumber = @PhoneNumber";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@PhoneNumber", phoneNo);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int customerID = Convert.ToInt32(reader["CustomerID"]);
+                    string name = reader["Name"].ToString();
+                    string phoneNumber = reader["PhoneNumber"].ToString();
+                    int age = Convert.ToInt32(reader["Age"]);
+                    string address = reader["Address"].ToString();
+                    customer = new CustomerModel(customerID, name, phoneNumber, age, address);
+                }
+            }
+            return customer;
         }
     }
 }

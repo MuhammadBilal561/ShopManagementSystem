@@ -29,16 +29,16 @@ namespace ShopManagementSystem
             return null;
         }
 
-        public CustomerModel FindCustomerByName(string name)
+        public List<CustomerModel> FindCustomerByName(string name)
         {
             //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            List<CustomerModel> customers = _repoDB.FindByName(name);
-            foreach (var c in customers)
-            {
-                if (c.GetName() == name)
-                    return c;
-            }
-            return null;
+            //foreach (var c in customers)
+            //{
+            //    if (c.GetName() == name)
+            //        return c;
+            //}
+            //return null;
+            return _repoDB.FindByName(name);
         }
 
         public bool UpdateCustomer(
@@ -70,19 +70,19 @@ namespace ShopManagementSystem
 
         public bool DeleteCustomer(int id)
         {
-            List<CustomerModel> customers = _repoDB.GetAll();
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
 
-            for (int i = 0; i < customers.Count; i++)
-            {
-                if (customers[i].GetCustomerID() == id)
-                {
-                    int deleteId = customers[i].GetCustomerID();
-                    customers.RemoveAt(i);
-                    _repoDB.Delete(deleteId);
-                    return true;
-                }
-            }
-            return false;
+            //for (int i = 0; i < customers.Count; i++)
+            //{
+            //    if (customers[i].GetCustomerID() == id)
+            //    {
+            //        customers.RemoveAt(i);
+
+            //        return true;
+            //    }
+            //}
+            //return false;
+            return _repoDB.Delete(id);
         }
 
         public List<CustomerModel> GetAllCustomers()
@@ -93,30 +93,32 @@ namespace ShopManagementSystem
 
         public List<CustomerModel> FindCustomerByFirstChar(string firstChar)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
-            List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            foreach (var customer in customers)
-            {
-                if (customer.GetName().StartsWith(firstChar))
-                {
-                    matchedCustomers.Add(customer);
-                }
-            }
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
+            //foreach (var customer in customers)
+            //{
+            //    if (customer.GetName().StartsWith(firstChar))
+            //    {
+            //        matchedCustomers.Add(customer);
+            //    }
+            //}
             //return matchedCustomers;
             return _repoDB.FindByFirstChar(firstChar);
         }
 
         public CustomerModel FindCustomerByPhoneNumber(string phoneNumber)
         {
-            List<CustomerModel> customers = customerRepository.LoadCustomers();
-            foreach (var customer in customers)
-            {
-                if (customer.GetPhoneNumber() == phoneNumber)
-                {
-                    return customer;
-                }
-            }
-            return null;
+            //List<CustomerModel> customers = _repoDB.GetAll();
+            //List<CustomerModel> customers = customerRepository.LoadCustomers();
+            //foreach (var customer in customers)
+            //{
+            //    if (customer.GetPhoneNumber() == phoneNumber)
+            //    {
+            //        return customer;
+            //    }
+            //}
+            //return null;
+            return _repoDB.FindByPhoneNo(phoneNumber);
         }
 
         public List<CustomerModel> FindCustomerByAddress(string address)

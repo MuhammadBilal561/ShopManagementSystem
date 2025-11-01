@@ -231,7 +231,7 @@ namespace ShopManagementSystem
             ConsoleHelper.WritePrompt("Enter Customer Name to search: ");
             string name = Console.ReadLine();
 
-            CustomerModel customer = customerService.FindCustomerByName(name);
+            List<CustomerModel> customer = customerService.FindCustomerByName(name);
 
             if (customer != null)
             {
