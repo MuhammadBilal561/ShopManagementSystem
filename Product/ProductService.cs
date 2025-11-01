@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ShopManagementSystem
@@ -7,6 +6,7 @@ namespace ShopManagementSystem
     internal class ProductService
     {
         private ProductRepository productRepository = new ProductRepository();
+
         //private ProductRepository fileRepo = new ProductRepository();
         private ProductRepoDB dbRepo = new ProductRepoDB();
 
@@ -106,24 +106,31 @@ namespace ShopManagementSystem
             return false;
         }
 
-        public bool DeleteProduct(string name)
+        public ProductModel FindProductByID(int id)
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            for (int i = 0; i < products.Count; i++)
+            return dbRepo.FindByID(id);
+        }
+
+        public bool DeleteProduct(int productID)
+        {
+            bool dbResult = dbRepo.Delete(productID);
+            if (dbResult)
             {
-                if (products[i].GetName() == name)
-                {
-                    products.RemoveAt(i);
-                    productRepository.SaveData(products);
-                    return true;
-                }
+                // update file
+                List<ProductModel> products = dbRepo.GetAll();
+                productRepository.SaveData(products);
             }
-            return false;
+            return dbResult;
         }
 
         public List<ProductModel> GetAllProducts()
         {
-            return productRepository.LoadProducts();
+            List<ProductModel> products = dbRepo.GetAll();
+            if (products.Count == 0)
+            {
+                products = productRepository.LoadProducts();
+            }
+            return products;
         }
     }
 }

@@ -289,10 +289,10 @@ namespace ShopManagementSystem
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--DELETE PRODUCT--");
 
-            ConsoleHelper.WritePrompt("Enter Product Name to Delete: ");
-            string name = Console.ReadLine();
+            ConsoleHelper.WritePrompt("Enter Product ID to Delete: ");
+            int id = int.Parse(Console.ReadLine());
 
-            ProductModel product = productService.FindProductByName(name);
+            ProductModel product = productService.FindProductByID(id);
 
             if (product == null)
             {
@@ -301,12 +301,12 @@ namespace ShopManagementSystem
             }
 
             ConsoleHelper.WriteInfo($"Found: {product.GetName()}");
-            ConsoleHelper.WritePrompt($"Are you sure you want to delete {name}? (Y/N): ");
+            ConsoleHelper.WritePrompt($"Are you sure you want to delete {product.GetName()}? (Y/N): ");
             string confirm = Console.ReadLine().Trim().ToUpper();
 
             if (confirm == "Y")
             {
-                bool deleted = productService.DeleteProduct(name);
+                bool deleted = productService.DeleteProduct(id);
 
                 if (deleted)
                 {

@@ -27,5 +27,68 @@ namespace ShopManagementSystem
                 }
             }
         }
+
+
+        public ProductModel FindByID(int productID)
+        {
+            ProductModel product = null;
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product WHERE ProductID = @ProductID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ProductID", productID);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    int id = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePirce = Convert.ToDouble(reader["SalePrice"]);
+                    double dicount = Convert.ToDouble(reader["Discount"]);
+                    product = new ProductModel(id, name, purchasePrice, salePirce, dicount);
+                }
+            }
+            return product;
+        }
+
+        public bool Delete(int productID)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "DELETE FROM Product WHERE ProductID = @ProductID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@ProductID", productID);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+
+        public List<ProductModel> GetAll()
+        {
+            List<ProductModel> products = new List<ProductModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product";
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int productID = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePirce = Convert.ToDouble(reader["SalePrice"]);
+                    double dicount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(
+                        new ProductModel(productID, name, purchasePrice, salePirce, dicount)
+                    );
+                }
+            }
+            return products;
+        }
     }
 }

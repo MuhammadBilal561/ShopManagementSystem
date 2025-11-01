@@ -18,6 +18,14 @@ namespace ShopManagementSystem
             this.SalePrice = salePrice;
             this.Discount = discount;
         }
+        public ProductModel(int productID, string name, double purchasePrice, double salePrice, double discount)
+        {
+            this.ProductID = productID;
+            this.Name = name;
+            this.PurchasePrice = purchasePrice;
+            this.SalePrice = salePrice;
+            this.Discount = discount;
+        }
 
         public int GetID()
         {
@@ -61,12 +69,12 @@ namespace ShopManagementSystem
 
         public string ToDataString()
         {
-            return $"{Name},{PurchasePrice},{SalePrice},{Discount}";
+            return $"{ProductID},{Name},{PurchasePrice},{SalePrice},{Discount}";
         }
 
         public override string ToString()
         {
-            return $"Name: {Name}, Sale Price: {SalePrice}, Discount: {Discount}%";
+            return $"ProductID: {ProductID}, Name: {Name}, Sale Price: {SalePrice}, Discount: {Discount}%";
         }
     }
 }
