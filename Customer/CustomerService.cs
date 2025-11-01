@@ -4,65 +4,69 @@ namespace ShopManagementSystem
 {
     internal class CustomerService
     {
-        private CustomerRepository customerRepository;
-        private CustomerRepoDB _repoDB = new CustomerRepoDB();
-
-        public CustomerService()
-        {
-            customerRepository = new CustomerRepository();
-        }
+        private CustomerRepository fileRepo = new CustomerRepository();
+        private CustomerRepoDB dbRepo = new CustomerRepoDB();
 
         public void AddCustomer(CustomerModel customer)
         {
-            _repoDB.Create(customer);
-            customerRepository.SaveToFile(customer);
+            bool dbResult = dbRepo.Create(customer);
+            if (dbResult)
+            {
+                //file backup
+                fileRepo.SaveToFile(customer);
+            }
         }
 
         public CustomerModel FindCustomerByID(int id)
         {
-            List<CustomerModel> customers = _repoDB.GetAll();
-            foreach (var c in customers)
-            {
-                if (c.GetCustomerID() == id)
-                    return c;
-            }
-            return null;
+            return dbRepo.FindByID(id); 
+
         }
 
         public List<CustomerModel> FindCustomerByName(string name)
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            //foreach (var c in customers)
-            //{
-            //    if (c.GetName() == name)
-            //        return c;
-            //}
-            //return null;
-            return _repoDB.FindByName(name);
+            List<CustomerModel> customers = dbRepo.FindByName(name);
+            if (customers.Count == 0)
+            {
+                //  file
+                List<CustomerModel> fileCustomers = fileRepo.LoadCustomers();
+                List<CustomerModel> matched = new List<CustomerModel>();
+                foreach (var c in fileCustomers)
+                {
+                    if (c.GetName() == name)
+                        matched.Add(c);
+                }
+                return matched;
+            }
+            return customers;
         }
 
         public bool UpdateCustomer(
-            int CustomerID,
+            int customerID,
             string newName,
             string newPhone,
             int newAge,
             string newAddress
         )
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            List<CustomerModel> customers = _repoDB.GetAll();
+            List<CustomerModel> customers = dbRepo.GetAll();
 
             for (int i = 0; i < customers.Count; i++)
             {
-                if (customers[i].GetCustomerID() == CustomerID)
+                if (customers[i].GetCustomerID() == customerID)
                 {
                     customers[i].SetName(newName);
                     customers[i].SetPhoneNumber(newPhone);
                     customers[i].SetAge(newAge);
                     customers[i].SetAddress(newAddress);
-                    customerRepository.SaveData(customers);
-                    //return true;
-                    return _repoDB.Update(CustomerID, customers[i]);
+
+                    bool dbResult = dbRepo.Update(customerID, customers[i]);
+                    if (dbResult)
+                    {
+                        // save to file also
+                        fileRepo.SaveData(customers);
+                    }
+                    return dbResult;
                 }
             }
             return false;
@@ -70,85 +74,90 @@ namespace ShopManagementSystem
 
         public bool DeleteCustomer(int id)
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-
-            //for (int i = 0; i < customers.Count; i++)
-            //{
-            //    if (customers[i].GetCustomerID() == id)
-            //    {
-            //        customers.RemoveAt(i);
-
-            //        return true;
-            //    }
-            //}
-            //return false;
-            return _repoDB.Delete(id);
+            bool dbResult = dbRepo.Delete(id);
+            if (dbResult)
+            {
+                // update file
+                List<CustomerModel> customers = dbRepo.GetAll();
+                fileRepo.SaveData(customers);
+            }
+            return dbResult;
         }
 
         public List<CustomerModel> GetAllCustomers()
         {
-            //return customerRepository.LoadCustomers();
-            return _repoDB.GetAll();
+            List<CustomerModel> customers = dbRepo.GetAll();
+            if (customers.Count == 0)
+            {
+                customers = fileRepo.LoadCustomers();
+            }
+            return customers;
         }
 
         public List<CustomerModel> FindCustomerByFirstChar(string firstChar)
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            //foreach (var customer in customers)
-            //{
-            //    if (customer.GetName().StartsWith(firstChar))
-            //    {
-            //        matchedCustomers.Add(customer);
-            //    }
-            //}
-            //return matchedCustomers;
-            return _repoDB.FindByFirstChar(firstChar);
+            List<CustomerModel> customers = dbRepo.FindByFirstChar(firstChar);
+            if (customers.Count == 0)
+            {
+                List<CustomerModel> fileCustomers = fileRepo.LoadCustomers();
+                List<CustomerModel> matched = new List<CustomerModel>();
+                foreach (var c in fileCustomers)
+                {
+                    if (c.GetName().StartsWith(firstChar))
+                        matched.Add(c);
+                }
+                return matched;
+            }
+            return customers;
         }
 
         public CustomerModel FindCustomerByPhoneNumber(string phoneNumber)
         {
-            //List<CustomerModel> customers = _repoDB.GetAll();
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            //foreach (var customer in customers)
-            //{
-            //    if (customer.GetPhoneNumber() == phoneNumber)
-            //    {
-            //        return customer;
-            //    }
-            //}
-            //return null;
-            return _repoDB.FindByPhoneNo(phoneNumber);
+            CustomerModel customer = dbRepo.FindByPhoneNo(phoneNumber);
+            if (customer == null)
+            {
+                List<CustomerModel> fileCustomers = fileRepo.LoadCustomers();
+                foreach (var c in fileCustomers)
+                {
+                    if (c.GetPhoneNumber() == phoneNumber)
+                        return c;
+                }
+            }
+            return customer;
         }
 
         public List<CustomerModel> FindCustomerByAddress(string address)
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            //foreach (var customer in customers)
-            //{
-            //    if (customer.GetAddress() == address)
-            //    {
-            //        matchedCustomers.Add(customer);
-            //    }
-            //}
-            //return matchedCustomers;
-            return _repoDB.FindByAddress(address);
+            List<CustomerModel> customers = dbRepo.FindByAddress(address);
+            if (customers.Count == 0)
+            {
+                List<CustomerModel> fileCustomers = fileRepo.LoadCustomers();
+                List<CustomerModel> matched = new List<CustomerModel>();
+                foreach (var c in fileCustomers)
+                {
+                    if (c.GetAddress() == address)
+                        matched.Add(c);
+                }
+                return matched;
+            }
+            return customers;
         }
 
         public List<CustomerModel> FindCustomerByAge(int age)
         {
-            //List<CustomerModel> customers = customerRepository.LoadCustomers();
-            //List<CustomerModel> matchedCustomers = new List<CustomerModel>();
-            //foreach (var customer in customers)
-            //{
-            //    if (customer.GetAge() == age)
-            //    {
-            //        matchedCustomers.Add(customer);
-            //    }
-            //}
-            //return matchedCustomers;
-            return _repoDB.FindByAge(age);
+            List<CustomerModel> customers = dbRepo.FindByAge(age);
+            if (customers.Count == 0)
+            {
+                List<CustomerModel> fileCustomers = fileRepo.LoadCustomers();
+                List<CustomerModel> matched = new List<CustomerModel>();
+                foreach (var c in fileCustomers)
+                {
+                    if (c.GetAge() == age)
+                        matched.Add(c);
+                }
+                return matched;
+            }
+            return customers;
         }
     }
 }

@@ -32,6 +32,8 @@ namespace ShopManagementSystem
             return this.CustomerID;
         }
 
+    
+
         public string GetName()
         {
             return this.Name;
@@ -51,6 +53,7 @@ namespace ShopManagementSystem
         {
             return this.Address;
         }
+
 
         public void SetName(string name)
         {
@@ -74,7 +77,7 @@ namespace ShopManagementSystem
 
         public string ToDataString()
         {
-            return $"{Name},{PhoneNumber},{Age},{Address}";
+            return $"{CustomerID},{Name},{PhoneNumber},{Age},{Address}";
         }
 
         public override string ToString()

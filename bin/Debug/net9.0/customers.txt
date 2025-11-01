@@ -1,3 +1,10 @@
-ali,03103504141,18,lhr
-sabir,0321010401401,59,lahore
-moeez,039139131,31,mutlan
+Moeez,12345678910,21,Lahore
+Hafeez,04213568419,30,Mutlan
+Salman,0924853921,25,Islamabad
+Faiq,03204025523,20,Lahore
+Usman,04203024013,19,Mia Chanu
+Haseeb,024005524414,21,Lahore
+Ahmad,0410405414,20,Bhawalpur
+Ali,042040514,22,Sarghoda
+Bilal,03260558938,20,Lahore
+a,11111,40,lhr

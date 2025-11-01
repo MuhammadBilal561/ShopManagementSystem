@@ -25,33 +25,19 @@ namespace ShopManagementSystem
                 string choice = Console.ReadLine();
 
                 if (choice == "1")
-                {
                     AddCustomer();
-                }
                 else if (choice == "2")
-                {
                     ViewAllCustomers();
-                }
                 else if (choice == "3")
-                {
                     UpdateCustomer();
-                }
                 else if (choice == "4")
-                {
                     DeleteCustomer();
-                }
                 else if (choice == "5")
-                {
                     AdvanceSearchMenu();
-                }
                 else if (choice == "0")
-                {
                     break;
-                }
                 else
-                {
                     ConsoleHelper.WriteError("Invalid option! Please select again.");
-                }
 
                 ConsoleHelper.Wait();
             }
@@ -71,32 +57,42 @@ namespace ShopManagementSystem
             string choice = Console.ReadLine();
 
             if (choice == "1")
-            {
                 SearchCustomerByName();
-            }
             else if (choice == "2")
-            {
                 SearchCustomerByFirstChar();
-            }
             else if (choice == "3")
-            {
                 SearchCustomerByPhNo();
-            }
             else if (choice == "4")
-            {
                 SearchCustomerByAddress();
-            }
             else if (choice == "5")
-            {
                 SearchCustomerByAge();
-            }
             else if (choice == "0")
-            {
                 return;
+            else
+                ConsoleHelper.WriteError("Invalid choice! Please try again.");
+        }
+
+        private void SearchCustomerByName()
+        {
+            Console.Clear();
+            ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY NAME--");
+
+            ConsoleHelper.WritePrompt("Enter Customer Name to search: ");
+            string name = Console.ReadLine();
+
+            List<CustomerModel> customers = customerService.FindCustomerByName(name);
+
+            if (customers != null && customers.Count > 0)
+            {
+                ConsoleHelper.WriteSuccess("Customers Found:");
+                foreach (var c in customers)
+                {
+                    ConsoleHelper.WriteInfo(c.ToString());
+                }
             }
             else
             {
-                ConsoleHelper.WriteError("Invalid choice! Please try again.");
+                ConsoleHelper.WriteError("No customers found with that name!");
             }
         }
 
@@ -104,28 +100,24 @@ namespace ShopManagementSystem
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY FIRST CHARACTER--");
-            ConsoleHelper.WritePrompt("Enter the first character of Customer Name to search: ");
+            ConsoleHelper.WritePrompt("Enter first character: ");
             string firstChar = Console.ReadLine();
             List<CustomerModel> customers = customerService.FindCustomerByFirstChar(firstChar);
             if (customers.Count > 0)
             {
                 ConsoleHelper.WriteSuccess("Customers Found:");
-                foreach (CustomerModel customer in customers)
-                {
+                foreach (var customer in customers)
                     ConsoleHelper.WriteInfo(customer.ToString());
-                }
             }
             else
-            {
                 ConsoleHelper.WriteError("No customers found with the given first character!");
-            }
         }
 
         private void SearchCustomerByPhNo()
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY PHONE NUMBER--");
-            ConsoleHelper.WritePrompt("Enter Phone Number to search: ");
+            ConsoleHelper.WritePrompt("Enter Phone Number: ");
             string phone = Console.ReadLine();
             CustomerModel customer = customerService.FindCustomerByPhoneNumber(phone);
             if (customer != null)
@@ -134,51 +126,41 @@ namespace ShopManagementSystem
                 ConsoleHelper.WriteInfo(customer.ToString());
             }
             else
-            {
                 ConsoleHelper.WriteError("Customer not found with the given phone number!");
-            }
         }
 
         private void SearchCustomerByAddress()
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY ADDRESS--");
-            ConsoleHelper.WritePrompt("Enter Address to search: ");
+            ConsoleHelper.WritePrompt("Enter Address: ");
             string address = Console.ReadLine();
             List<CustomerModel> customers = customerService.FindCustomerByAddress(address);
             if (customers.Count > 0)
             {
                 ConsoleHelper.WriteSuccess("Customers Found:");
                 foreach (CustomerModel customer in customers)
-                {
                     ConsoleHelper.WriteInfo(customer.ToString());
-                }
             }
             else
-            {
                 ConsoleHelper.WriteError("No customers found with the given address!");
-            }
         }
 
         private void SearchCustomerByAge()
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER BY AGE--");
-            ConsoleHelper.WritePrompt("Enter Age to search: ");
+            ConsoleHelper.WritePrompt("Enter Age: ");
             int age = int.Parse(Console.ReadLine());
             List<CustomerModel> customers = customerService.FindCustomerByAge(age);
             if (customers.Count > 0)
             {
                 ConsoleHelper.WriteSuccess("Customers Found:");
                 foreach (CustomerModel customer in customers)
-                {
                     ConsoleHelper.WriteInfo(customer.ToString());
-                }
             }
             else
-            {
                 ConsoleHelper.WriteError("No customers found with the given age!");
-            }
         }
 
         private void AddCustomer()
@@ -186,10 +168,10 @@ namespace ShopManagementSystem
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--ADD NEW CUSTOMER--");
 
-            ConsoleHelper.WritePrompt("Enter Customer Name: ");
+            ConsoleHelper.WritePrompt("Enter Name: ");
             string name = Console.ReadLine();
 
-            ConsoleHelper.WritePrompt("Enter Phone Number: ");
+            ConsoleHelper.WritePrompt("Enter Phone: ");
             string phone = Console.ReadLine();
 
             ConsoleHelper.WritePrompt("Enter Age: ");
@@ -208,7 +190,6 @@ namespace ShopManagementSystem
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("VIEW ALL CUSTOMERS");
-
             List<CustomerModel> customers = customerService.GetAllCustomers();
 
             if (customers.Count == 0)
@@ -218,52 +199,27 @@ namespace ShopManagementSystem
             }
 
             foreach (CustomerModel customer in customers)
-            {
                 ConsoleHelper.WriteInfo(customer.ToString());
-            }
-        }
-
-        private void SearchCustomerByName()
-        {
-            Console.Clear();
-            ConsoleHelper.WriteSubmenu("--SEARCH CUSTOMER--");
-
-            ConsoleHelper.WritePrompt("Enter Customer Name to search: ");
-            string name = Console.ReadLine();
-
-            List<CustomerModel> customer = customerService.FindCustomerByName(name);
-
-            if (customer != null)
-            {
-                ConsoleHelper.WriteSuccess("Customer Found:");
-                ConsoleHelper.WriteInfo(customer.ToString());
-            }
-            else
-            {
-                ConsoleHelper.WriteError("Customer not found!");
-            }
         }
 
         private void UpdateCustomer()
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--UPDATE CUSTOMER--");
+            ConsoleHelper.WritePrompt("Enter Customer ID: ");
+            int id = int.Parse(Console.ReadLine());
 
-            ConsoleHelper.WritePrompt("Enter the  Customer ID: ");
-            int CustomerID = int.Parse(Console.ReadLine());
-
-            CustomerModel existingCustomer = customerService.FindCustomerByID(CustomerID);
-
-            if (existingCustomer == null)
+            CustomerModel existing = customerService.FindCustomerByID(id);
+            if (existing == null)
             {
                 ConsoleHelper.WriteError("Customer not found!");
                 return;
             }
 
-            ConsoleHelper.WritePrompt("Enter new Customer Name: ");
+            ConsoleHelper.WritePrompt("Enter new Name: ");
             string newName = Console.ReadLine();
 
-            ConsoleHelper.WritePrompt("Enter new Phone Number: ");
+            ConsoleHelper.WritePrompt("Enter new Phone: ");
             string newPhone = Console.ReadLine();
 
             ConsoleHelper.WritePrompt("Enter new Age: ");
@@ -273,33 +229,26 @@ namespace ShopManagementSystem
             string newAddress = Console.ReadLine();
 
             bool updated = customerService.UpdateCustomer(
-                CustomerID,
+                id,
                 newName,
                 newPhone,
                 newAge,
                 newAddress
             );
-
             if (updated)
-            {
                 ConsoleHelper.WriteSuccess("Customer updated successfully!");
-            }
             else
-            {
                 ConsoleHelper.WriteError("Failed to update customer!");
-            }
         }
 
         private void DeleteCustomer()
         {
             Console.Clear();
             ConsoleHelper.WriteSubmenu("--DELETE CUSTOMER--");
-
-            ConsoleHelper.WritePrompt("Enter Customer Id to delete: ");
+            ConsoleHelper.WritePrompt("Enter Customer ID: ");
             int id = int.Parse(Console.ReadLine());
 
             CustomerModel customer = customerService.FindCustomerByID(id);
-
             if (customer == null)
             {
                 ConsoleHelper.WriteError("Customer not found!");
@@ -310,25 +259,18 @@ namespace ShopManagementSystem
             ConsoleHelper.WritePrompt(
                 $"Are you sure you want to delete {customer.GetName()}? (Y/N): "
             );
-            string confirmation = Console.ReadLine().Trim().ToUpper();
+            string confirm = Console.ReadLine().Trim().ToUpper();
 
-            if (confirmation == "Y")
+            if (confirm == "Y")
             {
                 bool deleted = customerService.DeleteCustomer(id);
-
                 if (deleted)
-                {
                     ConsoleHelper.WriteSuccess("Customer deleted successfully!");
-                }
                 else
-                {
                     ConsoleHelper.WriteError("Failed to delete customer!");
-                }
             }
             else
-            {
                 ConsoleHelper.WriteInfo("Deletion cancelled.");
-            }
         }
     }
 }

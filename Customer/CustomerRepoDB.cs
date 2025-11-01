@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopManagementSystem
 {
@@ -23,35 +19,43 @@ namespace ShopManagementSystem
                     cmd.Parameters.AddWithValue("@PhoneNumber", customer.GetPhoneNumber());
                     cmd.Parameters.AddWithValue("@Age", customer.GetAge());
                     cmd.Parameters.AddWithValue("@Address", customer.GetAddress());
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
                 }
             }
         }
 
-        public bool Delete(int id)
+        public bool Delete(int customerID)
         {
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
                 con.Open();
-                string query = "delete from customer where CustomerID = @CustomerID";
+                string query = "DELETE FROM Customer WHERE CustomerID = @CustomerID";
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@CustomerID", id);
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        return true;
-                    }
-                    else
-                        return false;
+                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+
+        public bool Update(int customerID, CustomerModel updatedCustomer)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "UPDATE Customer SET Name = @Name, PhoneNumber = @PhoneNumber, Age = @Age, Address = @Address WHERE CustomerID = @CustomerID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", updatedCustomer.GetName());
+                    cmd.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.GetPhoneNumber());
+                    cmd.Parameters.AddWithValue("@Age", updatedCustomer.GetAge());
+                    cmd.Parameters.AddWithValue("@Address", updatedCustomer.GetAddress());
+                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
                 }
             }
         }
@@ -78,31 +82,28 @@ namespace ShopManagementSystem
             return customers;
         }
 
-        public bool Update(int customerID, CustomerModel updatedCustomer)
+
+        public CustomerModel FindByID(int customerID)
         {
+            CustomerModel customer = null;
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
                 con.Open();
-                string query =
-                    "UPDATE Customer SET Name = @Name, PhoneNumber = @PhoneNumber, Age = @Age, Address = @Address WHERE CustomerID = @CustomerID";
-                using (SqlCommand cmd = new SqlCommand(query, con))
+                string query = "SELECT * FROM Customer WHERE CustomerID = @ID";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ID", customerID);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@Name", updatedCustomer.GetName());
-                    cmd.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.GetPhoneNumber());
-                    cmd.Parameters.AddWithValue("@Age", updatedCustomer.GetAge());
-                    cmd.Parameters.AddWithValue("@Address", updatedCustomer.GetAddress());
-                    cmd.Parameters.AddWithValue("@CustomerID", customerID);
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    int id = Convert.ToInt32(reader["CustomerID"]);
+                    string name = reader["Name"].ToString();
+                    string phoneNumber = reader["PhoneNumber"].ToString();
+                    int age = Convert.ToInt32(reader["Age"]);
+                    string address = reader["Address"].ToString();
+                    customer = new CustomerModel(id, name, phoneNumber, age, address);
                 }
             }
+            return customer;
         }
 
         public List<CustomerModel> FindByName(string name)
@@ -113,7 +114,7 @@ namespace ShopManagementSystem
                 con.Open();
                 string query = "SELECT * FROM Customer WHERE Name LIKE @Name";
                 SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@Name", name);
+                cmd.Parameters.AddWithValue("@Name", "%" + name + "%");
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -141,11 +142,11 @@ namespace ShopManagementSystem
                 while (reader.Read())
                 {
                     int customerID = Convert.ToInt32(reader["CustomerID"]);
-                    string cName = reader["Name"].ToString();
+                    string name = reader["Name"].ToString();
                     string phoneNumber = reader["PhoneNumber"].ToString();
                     int age = Convert.ToInt32(reader["Age"]);
                     string address = reader["Address"].ToString();
-                    customers.Add(new CustomerModel(customerID, cName, phoneNumber, age, address));
+                    customers.Add(new CustomerModel(customerID, name, phoneNumber, age, address));
                 }
             }
             return customers;
@@ -190,8 +191,8 @@ namespace ShopManagementSystem
                     string name = reader["Name"].ToString();
                     string phoneNumber = reader["PhoneNumber"].ToString();
                     int cAge = Convert.ToInt32(reader["Age"]);
-                    string cAddress = reader["Address"].ToString();
-                    customers.Add(new CustomerModel(customerID, name, phoneNumber, cAge, cAddress));
+                    string address = reader["Address"].ToString();
+                    customers.Add(new CustomerModel(customerID, name, phoneNumber, cAge, address));
                 }
             }
             return customers;
@@ -203,11 +204,11 @@ namespace ShopManagementSystem
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
                 con.Open();
-                string query = "SELECT * FROM Customer WHERE PhoneNumber = @PhoneNumber";
+                string query = "SELECT * FROM Customer WHERE TRIM(PhoneNumber) = @PhoneNumber";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@PhoneNumber", phoneNo);
                 SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
                     int customerID = Convert.ToInt32(reader["CustomerID"]);
                     string name = reader["Name"].ToString();
