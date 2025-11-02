@@ -51,6 +51,29 @@ namespace ShopManagementSystem
             return product;
         }
 
+        public ProductModel FindByName(string name)
+        {
+            ProductModel product = null;
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product WHERE Name LIKE @Name";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Name", "%" + name + "%");
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = Convert.ToInt32(reader["ProductID"]);
+                    string Name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePrice = Convert.ToDouble(reader["SalePrice"]);
+                    double discount = Convert.ToDouble(reader["Discount"]);
+                    product = new ProductModel(id, Name, purchasePrice, salePrice, discount);
+                }
+            }
+            return product;
+        }
+
         public bool Delete(int productID)
         {
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
