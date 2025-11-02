@@ -20,8 +20,6 @@ namespace ShopManagementSystem
             }
         }
 
-       
-
         public ProductModel FindProductByName(string name)
         {
             ProductModel product = dbRepo.FindByName(name);
@@ -41,17 +39,21 @@ namespace ShopManagementSystem
 
         public List<ProductModel> FindProductsByPrice(double price)
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            List<ProductModel> matchedProducts = new List<ProductModel>();
-            foreach (var product in products)
+            List<ProductModel> products = dbRepo.FindByPrice(price);
+            if (products.Count == 0)
             {
-                if (product.GetSalePrice() == price)
+                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> matchedProducts = new List<ProductModel>();
+                foreach (var product in fileProducts)
                 {
-                    matchedProducts.Add(product);
+                    if (product.GetSalePrice() == price)
+                    {
+                        matchedProducts.Add(product);
+                    }
                 }
+                return matchedProducts;
             }
-
-            return matchedProducts;
+            return products;
         }
 
         public List<ProductModel> FindProductsByPriceRange(double minPirce, double maxPrice)

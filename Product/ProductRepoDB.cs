@@ -27,6 +27,63 @@ namespace ShopManagementSystem
                 }
             }
         }
+        public bool Delete(int productID)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "DELETE FROM Product WHERE ProductID = @ProductID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@ProductID", productID);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+        public bool Update(int productID, ProductModel updateProduct)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "UPDATE Product SET Name = @Name, PurchasePrice = @PurchasePrice, SalePrice = @SalePrice, Discount = @Discount WHERE ProductID = @ProductID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", updateProduct.GetName());
+                    cmd.Parameters.AddWithValue("@PurchasePrice", updateProduct.GetPurchasePrice());
+                    cmd.Parameters.AddWithValue("@SalePrice", updateProduct.GetSalePrice());
+                    cmd.Parameters.AddWithValue("@Discount", updateProduct.GetDiscount());
+                    cmd.Parameters.AddWithValue("@ProductID", productID);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+        public List<ProductModel> GetAll()
+        {
+            List<ProductModel> products = new List<ProductModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product";
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int productID = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePirce = Convert.ToDouble(reader["SalePrice"]);
+                    double dicount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(
+                        new ProductModel(productID, name, purchasePrice, salePirce, dicount)
+                    );
+                }
+            }
+            return products;
+        }
 
         public ProductModel FindByID(int productID)
         {
@@ -74,64 +131,30 @@ namespace ShopManagementSystem
             return product;
         }
 
-        public bool Delete(int productID)
-        {
-            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
-            {
-                con.Open();
-                string query = "DELETE FROM Product WHERE ProductID = @ProductID";
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@ProductID", productID);
-                    int rows = cmd.ExecuteNonQuery();
-                    return rows > 0;
-                }
-            }
-        }
-
-        public bool Update(int productID, ProductModel updateProduct)
-        {
-            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
-            {
-                con.Open();
-                string query =
-                    "UPDATE Product SET Name = @Name, PurchasePrice = @PurchasePrice, SalePrice = @SalePrice, Discount = @Discount WHERE ProductID = @ProductID";
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@Name", updateProduct.GetName());
-                    cmd.Parameters.AddWithValue("@PurchasePrice", updateProduct.GetPurchasePrice());
-                    cmd.Parameters.AddWithValue("@SalePrice", updateProduct.GetSalePrice());
-                    cmd.Parameters.AddWithValue("@Discount", updateProduct.GetDiscount());
-                    cmd.Parameters.AddWithValue("@ProductID", productID);
-
-                    int rows = cmd.ExecuteNonQuery();
-                    return rows > 0;
-                }
-            }
-        }
-
-        public List<ProductModel> GetAll()
+        public List<ProductModel> FindByPrice(double price) 
         {
             List<ProductModel> products = new List<ProductModel>();
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
             {
                 con.Open();
-                string query = "SELECT * FROM Product";
+                string query = "SELECT * FROM Product WHERE SalePrice = @SalePrice";
                 SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SalePrice", price);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    int productID = Convert.ToInt32(reader["ProductID"]);
+                    int id = Convert.ToInt32(reader["ProductID"]);
                     string name = reader["Name"].ToString();
                     double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
-                    double salePirce = Convert.ToDouble(reader["SalePrice"]);
-                    double dicount = Convert.ToDouble(reader["Discount"]);
-                    products.Add(
-                        new ProductModel(productID, name, purchasePrice, salePirce, dicount)
-                    );
+                    double salePrice = Convert.ToDouble(reader["SalePrice"]);
+                    double discount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(new ProductModel(id, name, purchasePrice, salePrice, discount));
                 }
             }
             return products;
         }
+
+
+
     }
 }
