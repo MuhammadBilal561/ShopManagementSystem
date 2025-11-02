@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ShopManagementSystem.Order;
 
 namespace ShopManagementSystem
 {
@@ -7,6 +8,7 @@ namespace ShopManagementSystem
     {
         private readonly OrderRepository orderRepository;
         public CustomerRepository _customerRepo;
+        private readonly OrderRepoDB dbRepo = new OrderRepoDB();
 
         public OrderService()
         {
@@ -15,17 +17,24 @@ namespace ShopManagementSystem
 
         public List<OrderModel> GetAllOrders()
         {
-            return orderRepository.LoadOrders();
+            List<OrderModel> orders = dbRepo.GetAll();
+            if (orders.Count == 0)
+            {
+                return orderRepository.LoadOrders();
+            }
+            return orders;
         }
 
         public void CreateNewOrder(OrderModel order)
         {
-            List<OrderModel> existingOrders = orderRepository.LoadOrders();
-
-            existingOrders.Add(order);
-
-            orderRepository.SaveOrders(existingOrders);
+            bool dbResult = dbRepo.Create(order);
+            if (dbResult)
+            {
+                //file backup
+                List<OrderModel> existingOrders = orderRepository.LoadOrders();
+                existingOrders.Add(order);
+                orderRepository.SaveOrders(existingOrders);
+            }
         }
-
     }
 }

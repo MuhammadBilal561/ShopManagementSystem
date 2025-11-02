@@ -5,6 +5,7 @@ namespace ShopManagementSystem
 {
     internal class OrderModel
     {
+        public int OrderID;
         public List<OrderItemModel> OrderList = new List<OrderItemModel>();
         private string CustomerName;
         private string PhoneNo;
@@ -14,6 +15,15 @@ namespace ShopManagementSystem
 
         public OrderModel(string customerName, string phoneNo, int age, string address)
         {
+            this.CustomerName = customerName;
+            this.PhoneNo = phoneNo;
+            this.Age = age;
+            this.Address = address;
+            this.OrderDate = DateTime.Now;
+        }
+        public OrderModel(int orderId, string customerName, string phoneNo, int age, string address)
+        {
+            this.OrderID = orderId;
             this.CustomerName = customerName;
             this.PhoneNo = phoneNo;
             this.Age = age;
@@ -84,6 +94,11 @@ namespace ShopManagementSystem
                 total = total + item.GetSubtotal();
             }
             return total;
+        }
+
+        public void SetTotalAmount(double total)
+        {
+            // This method is intentionally left blank as TotalAmount is calculated dynamically.
         }
     }
 }
