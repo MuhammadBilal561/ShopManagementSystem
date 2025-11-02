@@ -27,6 +27,7 @@ namespace ShopManagementSystem
                 }
             }
         }
+
         public bool Delete(int productID)
         {
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
@@ -41,6 +42,7 @@ namespace ShopManagementSystem
                 }
             }
         }
+
         public bool Update(int productID, ProductModel updateProduct)
         {
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
@@ -61,6 +63,7 @@ namespace ShopManagementSystem
                 }
             }
         }
+
         public List<ProductModel> GetAll()
         {
             List<ProductModel> products = new List<ProductModel>();
@@ -131,7 +134,7 @@ namespace ShopManagementSystem
             return product;
         }
 
-        public List<ProductModel> FindByPrice(double price) 
+        public List<ProductModel> FindByPrice(double price)
         {
             List<ProductModel> products = new List<ProductModel>();
             using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
@@ -154,7 +157,29 @@ namespace ShopManagementSystem
             return products;
         }
 
-
-
+        public List<ProductModel> FindByPriceRange(double minPrice, double maxPrice)
+        {
+            List<ProductModel> products = new List<ProductModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "SELECT * FROM Product WHERE SalePrice BETWEEN @MinPrice AND @MaxPrice";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@MinPrice", minPrice);
+                cmd.Parameters.AddWithValue("@MaxPrice", maxPrice);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePrice = Convert.ToDouble(reader["SalePrice"]);
+                    double discount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(new ProductModel(id, name, purchasePrice, salePrice, discount));
+                }
+            }
+            return products;
+        }
     }
 }

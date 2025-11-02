@@ -58,16 +58,21 @@ namespace ShopManagementSystem
 
         public List<ProductModel> FindProductsByPriceRange(double minPirce, double maxPrice)
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            List<ProductModel> matchedProducts = new List<ProductModel>();
-            foreach (var product in products)
+            List<ProductModel> products = dbRepo.FindByPriceRange(minPirce, maxPrice);
+            if (products.Count == 0)
             {
-                if (product.GetSalePrice() >= minPirce && product.GetSalePrice() <= maxPrice)
+                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> matchedProducts = new List<ProductModel>();
+                foreach (var product in fileProducts)
                 {
-                    matchedProducts.Add(product);
+                    if (product.GetSalePrice() >= minPirce && product.GetSalePrice() <= maxPrice)
+                    {
+                        matchedProducts.Add(product);
+                    }
                 }
+                return matchedProducts;
             }
-            return matchedProducts;
+            return products;
         }
 
         public List<ProductModel> FindProductByPirceDiff(double priceDiff)
