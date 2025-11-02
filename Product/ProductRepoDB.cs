@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -181,5 +182,55 @@ namespace ShopManagementSystem
             }
             return products;
         }
+
+        public List<ProductModel> FindByPriceDiff(double price)
+        {
+            List<ProductModel> products = new List<ProductModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product WHERE SalePrice - PurchasePrice = @PriceDiff";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@PriceDiff", price);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePrice = Convert.ToDouble(reader["SalePrice"]);
+                    double discount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(new ProductModel(id, name, purchasePrice, salePrice, discount));
+                }
+            }
+            return products;
+        }
+
+
+        public List<ProductModel> FindBySubString(string subString)
+        {
+            List<ProductModel> products = new List<ProductModel>();
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query = "SELECT * FROM Product WHERE Name LIKE @SubString";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@SubString", "%" + subString + "%");
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = Convert.ToInt32(reader["ProductID"]);
+                    string name = reader["Name"].ToString();
+                    double purchasePrice = Convert.ToDouble(reader["PurchasePrice"]);
+                    double salePrice = Convert.ToDouble(reader["SalePrice"]);
+                    double discount = Convert.ToDouble(reader["Discount"]);
+                    products.Add(new ProductModel(id, name, purchasePrice, salePrice, discount));
+                }
+            }
+            return products;
+        }
+
     }
+
+
 }

@@ -1,52 +1,49 @@
-# Shop Management System (C# Console App)
+# 🛒 Shop Management System (C# Console App)
 
-A console-based application for managing a shop's products, customers, and sales, built with C# and .NET. This project demonstrates professional OOP principles, a layered architecture, and strict adherence to coding standards.
+A professional console-based application for managing a shop's inventory, customers, and sales. This project is built with C# and .NET, demonstrating a **layered architecture**, **hybrid data persistence**, and strict adherence to professional coding standards.
 
 ![Shop Management System UI Screenshot](https://i.imgur.com/gKj8V5c.png)
 
-## 📋 Features
+## 📋 Key Features
 
-* **Product Management:** Add, update, delete, and view all products.
-* **Customer Management:** Add new customers and view all registered customers.
-* **Sales System:** Create new sales orders by selecting a customer (or creating a new one) and adding products.
-* **Order History:** View a complete history of all past orders, or filter orders by a specific customer.
-* **Persistent Storage:** All data (products, customers, orders) is loaded from local `.txt` files at startup and saved back to them on exit.
-* **Attractive UI:** The console is enhanced with colors for a more user-friendly experience.
+* **Hybrid Data Persistence (DB-First):** All core operations (Add, Update, Delete) prioritize a **SQL Database** connection. Local `.txt` files serve as a backup/fallback for critical data, ensuring system resilience.
+* **Customer & Product Management:** Full CRUD (Create, Read, Update, Delete) functionality for both products and customer records.
+* **Advanced Search:** Robust searching for customers by Name, Initial Character, **Age, Address, and Phone Number**.
+* **Sales & Order History:** Create detailed sales orders and view a complete history, filterable by customer.
+* **Robust Architecture:** Utilizes a strict **Layered Facade Pattern** for separation of concerns and maintainability.
 
-## 🏛️ Project Architecture (Layered Facade)
+---
 
-This project uses a professional, layered architecture that separates concerns, making the code clean, maintainable, and easy to test.
+## 🏛️ Project Architecture (Layered Facade & Hybrid Repository)
 
-The project is organized into feature folders (`Product`, `Customer`, `Order`) and a `Core` (the root).
+The project employs a standard five-layer architecture, with the **Service Layer** handling the business logic of choosing the correct data source.
 
-1.  **UI Layer (`...UI.cs` files):**
-    * Responsible *only* for displaying menus and handling user input.
-    * Gets all its data from the `Shop` facade.
-    * **Example:** `ProductUI.cs`, `CustomerUI.cs`, `OrderUI.cs`.
+### Architecture Breakdown
 
-2.  **Facade Layer (`Shop.cs`):**
-    * Acts as a single, simple "manager" or "entry point" for the UI layer.
-    * The UI classes *only* talk to this `Shop.cs` file.
-    * It delegates all work requests to the appropriate service.
+| Layer | Responsibility | Key Component | Data Strategy |
+| :--- | :--- | :--- | :--- |
+| **1. UI** | Handles **User Input** and **Output** only. | `CustomerUI.cs`, `ProductUI.cs` | N/A |
+| **2. Facade** | **Single entry point** for the UI. Delegates all requests. | `Shop.cs` | N/A |
+| **3. Service (Business Logic)** | Implements **data strategy (DB-First)**, manages complex validation, and coordinates repositories. | `CustomerService.cs` | Calls `...RepoDB` first, falls back to `...Repository` (File) if necessary. |
+| **4. Repository** | Handles **direct data access** for a specific data type (DB or File). | `CustomerRepoDB.cs`, `CustomerRepository.cs` | ADO.NET (`SqlConnection`) or `System.IO` (Files) |
+| **5. Model** | Simple data-holding classes (**POCOs**). | `CustomerModel.cs`, `ProductModel.cs` | N/A |
 
-3.  **Service Layer (`...Service.cs` files):**
-    * Contains all the business logic. Each service is a "mini-brain" for its feature.
-    * **Example:** `ProductService.cs` (manages product logic), `CustomerService.cs` (manages customer logic).
+### Key Development Learnings
 
-4.  **Repository Layer (`...Repository.cs` files):**
-    * Responsible *only* for data access.
-    * Its job is to read from and write to the `.txt` files.
-    * **Example:** `ProductRepository.cs` (handles `products.txt`).
+* **Handling Identity:** Implemented logic using `SELECT SCOPE_IDENTITY()` and `ExecuteScalar()` in the `Create` method to immediately retrieve and assign the auto-generated database `CustomerID` to the C# `CustomerModel` object.
+* **Varchar Search Robustness:** Ensured robust string matching for `varchar` database columns (like **Phone Number**) by implementing input cleaning (stripping spaces, dashes) in the UI before executing the SQL query, preventing search failures.
 
-5.  **Model Layer (`...Model.cs` files):**
-    * Simple data-holding classes (POCOs) that represent our data.
-    * **Example:** `ProductModel.cs`, `CustomerModel.cs`.
+---
 
-### Flow of Control
+## 🚀 Getting Started
 
-`Program.cs` ➡️ `...UI` (e.g., `ProductUI`) ➡️ `Shop.cs` (Facade) ➡️ `...Service` (e.g., `ProductService`) ➡️ `...Repository` (e.g., `ProductRepository`)
+### Prerequisites
 
-## 🚀 How to Run
+1.  **C# and .NET Framework:** Ensure you have the required .NET environment installed.
+2.  **SQL Server Instance:** A running SQL Server instance (or equivalent) for primary data storage.
+3.  **Database Configuration:** You must manually create the `Customer`, `Product`, and `Order` tables in your database before running.
+
+### Installation and Setup
 
 1.  **Clone the repository:**
     ```bash
@@ -54,23 +51,22 @@ The project is organized into feature folders (`Product`, `Customer`, `Order`) a
     cd ShopManagementSystem
     ```
 
-2.  **Trust the Dev Certificate (Optional, but good practice):**
-    ```bash
-    dotnet dev-certs https --trust
-    ```
+2.  **Update Connection String:**
+    * Locate the `Utils.DBConnection()` method (or equivalent configuration file).
+    * Update the connection string to point to your local SQL Database.
 
 3.  **Run the project:**
     ```bash
     dotnet run
     ```
-    *Note: The program will automatically create `products.txt`, `customers.txt`, and `orders.txt` if they don't exist, as they are included in the project with "Copy if newer".*
+
+---
 
 ## 📜 Coding Guidelines
 
-This project was built to a strict set of academic and professional guidelines:
+This project was developed under a strict set of guidelines:
 
-* **No `get; set;` Properties:** All data models (`ProductModel`, `CustomerModel`) use private backing fields with public `Get...()` and `Set...()` methods.
-* **No `switch` Statements:** All menu and logic branching is handled exclusively with `if-else if-else` blocks.
-* **File Organization:** Each class is in its own file, organized by feature.
-* **Naming Conventions:** All class and method names are `PascalCase`, and all local variables are `camelCase`.
-* **Brace Style:** The project uses the Allman brace style (braces on new lines).
+* **Accessor Methods:** Data models use private backing fields with public `Get...()` and `Set...()` methods (no auto-properties).
+* **Control Flow:** Menu and logic branching are handled exclusively with `if-else if-else` blocks (no `switch` statements).
+* **Organization:** Strict separation of classes into individual files, organized by feature folders.
+* **Naming Conventions:** Adherence to standard C# Naming Conventions (`PascalCase` for classes/methods, `camelCase` for local variables/parameters).

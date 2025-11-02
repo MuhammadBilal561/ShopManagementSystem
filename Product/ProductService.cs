@@ -77,17 +77,22 @@ namespace ShopManagementSystem
 
         public List<ProductModel> FindProductByPirceDiff(double priceDiff)
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            List<ProductModel> matchedProducts = new List<ProductModel>();
-            foreach (var product in products)
+            List<ProductModel> products = dbRepo.FindByPriceDiff(priceDiff);
+            if (products.Count == 0)
             {
-                double diff = product.GetSalePrice() - product.GetPurchasePrice();
-                if (Math.Abs(diff) == priceDiff)
+                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> matchedProducts = new List<ProductModel>();
+                foreach (var product in fileProducts)
                 {
-                    matchedProducts.Add(product);
+                    double diff = product.GetSalePrice() - product.GetPurchasePrice();
+                    if (Math.Abs(diff) == priceDiff)
+                    {
+                        matchedProducts.Add(product);
+                    }
                 }
+                return matchedProducts;
             }
-            return matchedProducts;
+            return products;
         }
 
         public List<ProductModel> FindProductsBySubString(string subString)

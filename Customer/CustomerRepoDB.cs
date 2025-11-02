@@ -82,7 +82,6 @@ namespace ShopManagementSystem
             return customers;
         }
 
-
         public CustomerModel FindByID(int customerID)
         {
             CustomerModel customer = null;
