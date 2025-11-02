@@ -27,7 +27,7 @@ namespace ShopManagementSystem
             this.Discount = discount;
         }
 
-        public int GetID()
+        public int GetProductID()
         {
             return this.ProductID;
         }

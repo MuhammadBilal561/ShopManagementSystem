@@ -28,7 +28,6 @@ namespace ShopManagementSystem
             }
         }
 
-
         public ProductModel FindByID(int productID)
         {
             ProductModel product = null;
@@ -61,6 +60,27 @@ namespace ShopManagementSystem
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@ProductID", productID);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
+
+        public bool Update(int productID, ProductModel updateProduct)
+        {
+            using (SqlConnection con = new SqlConnection(Utils.DBConnection()))
+            {
+                con.Open();
+                string query =
+                    "UPDATE Product SET Name = @Name, PurchasePrice = @PurchasePrice, SalePrice = @SalePrice, Discount = @Discount WHERE ProductID = @ProductID";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", updateProduct.GetName());
+                    cmd.Parameters.AddWithValue("@PurchasePrice", updateProduct.GetPurchasePrice());
+                    cmd.Parameters.AddWithValue("@SalePrice", updateProduct.GetSalePrice());
+                    cmd.Parameters.AddWithValue("@Discount", updateProduct.GetDiscount());
+                    cmd.Parameters.AddWithValue("@ProductID", productID);
+
                     int rows = cmd.ExecuteNonQuery();
                     return rows > 0;
                 }

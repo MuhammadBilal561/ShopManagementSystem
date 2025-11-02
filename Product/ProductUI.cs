@@ -251,37 +251,38 @@ namespace ShopManagementSystem
         private void UpdateProduct()
         {
             Console.Clear();
-            ConsoleHelper.WriteSubmenu("--UPDATE PRODUCT--");
+            ConsoleHelper.WriteSubmenu("--UPDATE Product--");
+            ConsoleHelper.WritePrompt("Enter Prodcut ID: ");
+            int id = int.Parse(Console.ReadLine());
 
-            ConsoleHelper.WritePrompt("Enter Product Name to Update: ");
-            string name = Console.ReadLine();
-
-            ProductModel product = productService.FindProductByName(name);
-
-            if (product == null)
+            ProductModel existing = productService.FindProductByID(id);
+            if (existing == null)
             {
                 ConsoleHelper.WriteError("Product not found!");
                 return;
             }
 
-            ConsoleHelper.WritePrompt(
-                $"Enter New Sale Price (current: {product.GetSalePrice()}): "
-            );
-            double newSalePrice = double.Parse(Console.ReadLine());
+            ConsoleHelper.WritePrompt("Enter new Name: ");
+            string newName = Console.ReadLine();
 
-            ConsoleHelper.WritePrompt($"Enter New Discount (current: {product.GetDiscount()}): ");
+            ConsoleHelper.WritePrompt("Enter new Sale Price: ");
+            double newPrice = double.Parse(Console.ReadLine());
+
+            ConsoleHelper.WritePrompt("Enter new Discount: ");
             double newDiscount = double.Parse(Console.ReadLine());
 
-            bool updated = productService.UpdateProduct(name, newSalePrice, newDiscount);
+            
 
+            bool updated = productService.UpdateProduct(
+                id,
+                newName,
+                newPrice,
+                newDiscount
+            );
             if (updated)
-            {
                 ConsoleHelper.WriteSuccess("Product updated successfully!");
-            }
             else
-            {
-                ConsoleHelper.WriteError("Failed to update product!");
-            }
+                ConsoleHelper.WriteError("Failed to update Product!");
         }
 
         private void DeleteProduct()

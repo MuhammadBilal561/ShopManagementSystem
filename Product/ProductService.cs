@@ -89,18 +89,29 @@ namespace ShopManagementSystem
             }
             return matchedProducts;
         }
-
-        public bool UpdateProduct(string name, double newSalePrice, double newDiscount)
+        public bool UpdateProduct(
+                  int productID,
+                  string newName,
+                  double newSalePrice,
+                  double newDiscount              )
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            foreach (var product in products)
+            List<ProductModel> products = dbRepo.GetAll();
+
+            for (int i = 0; i < products.Count; i++)
             {
-                if (product.GetName() == name)
+                if (products[i].GetProductID() == productID)
                 {
-                    product.SetSalePrice(newSalePrice);
-                    product.SetDiscount(newDiscount);
-                    productRepository.SaveData(products);
-                    return true;
+                    products[i].SetName(newName);
+                    products[i].SetSalePrice(newSalePrice);
+                    products[i].SetDiscount(newDiscount);
+
+                    bool dbResult = dbRepo.Update(productID, products[i]);
+                    if (dbResult)
+                    {
+                        // save to file also
+                        productRepository.SaveData(products);
+                    }
+                    return dbResult;
                 }
             }
             return false;
