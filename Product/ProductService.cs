@@ -5,9 +5,7 @@ namespace ShopManagementSystem
 {
     internal class ProductService
     {
-        private ProductRepository productRepository = new ProductRepository();
-
-        //private ProductRepository fileRepo = new ProductRepository();
+        private ProductRepository fileRepo = new ProductRepository();
         private ProductRepoDB dbRepo = new ProductRepoDB();
 
         public void AddProduct(ProductModel product)
@@ -16,7 +14,7 @@ namespace ShopManagementSystem
             if (dbResult)
             {
                 //file backup
-                productRepository.SaveToFile(product);
+                fileRepo.SaveToFile(product);
             }
         }
 
@@ -25,7 +23,7 @@ namespace ShopManagementSystem
             ProductModel product = dbRepo.FindByName(name);
             if (product == null)
             {
-                foreach (var p in productRepository.LoadProducts())
+                foreach (var p in fileRepo.LoadProducts())
                 {
                     if (p.GetName() == name)
                     {
@@ -42,7 +40,7 @@ namespace ShopManagementSystem
             List<ProductModel> products = dbRepo.FindByPrice(price);
             if (products.Count == 0)
             {
-                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> fileProducts = fileRepo.LoadProducts();
                 List<ProductModel> matchedProducts = new List<ProductModel>();
                 foreach (var product in fileProducts)
                 {
@@ -61,7 +59,7 @@ namespace ShopManagementSystem
             List<ProductModel> products = dbRepo.FindByPriceRange(minPirce, maxPrice);
             if (products.Count == 0)
             {
-                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> fileProducts = fileRepo.LoadProducts();
                 List<ProductModel> matchedProducts = new List<ProductModel>();
                 foreach (var product in fileProducts)
                 {
@@ -80,7 +78,7 @@ namespace ShopManagementSystem
             List<ProductModel> products = dbRepo.FindByPriceDiff(priceDiff);
             if (products.Count == 0)
             {
-                List<ProductModel> fileProducts = productRepository.LoadProducts();
+                List<ProductModel> fileProducts = fileRepo.LoadProducts();
                 List<ProductModel> matchedProducts = new List<ProductModel>();
                 foreach (var product in fileProducts)
                 {
@@ -97,16 +95,21 @@ namespace ShopManagementSystem
 
         public List<ProductModel> FindProductsBySubString(string subString)
         {
-            List<ProductModel> products = productRepository.LoadProducts();
-            List<ProductModel> matchedProducts = new List<ProductModel>();
-            foreach (var product in products)
+            List<ProductModel> products = dbRepo.FindBySubString(subString);
+            if (products.Count == 0)
             {
-                if (product.GetName().Contains(subString))
+                List<ProductModel> fileProducts = fileRepo.LoadProducts();
+                List<ProductModel> matchedProducts = new List<ProductModel>();
+                foreach (var product in fileProducts)
                 {
-                    matchedProducts.Add(product);
+                    if (product.GetName().Contains(subString, StringComparison.OrdinalIgnoreCase))
+                    {
+                        matchedProducts.Add(product);
+                    }
                 }
+                return matchedProducts;
             }
-            return matchedProducts;
+            return products;
         }
 
         public bool UpdateProduct(
@@ -130,7 +133,7 @@ namespace ShopManagementSystem
                     if (dbResult)
                     {
                         // save to file also
-                        productRepository.SaveData(products);
+                        fileRepo.SaveData(products);
                     }
                     return dbResult;
                 }
@@ -150,7 +153,7 @@ namespace ShopManagementSystem
             {
                 // update file
                 List<ProductModel> products = dbRepo.GetAll();
-                productRepository.SaveData(products);
+                fileRepo.SaveData(products);
             }
             return dbResult;
         }
@@ -160,7 +163,7 @@ namespace ShopManagementSystem
             List<ProductModel> products = dbRepo.GetAll();
             if (products.Count == 0)
             {
-                products = productRepository.LoadProducts();
+                products = fileRepo.LoadProducts();
             }
             return products;
         }

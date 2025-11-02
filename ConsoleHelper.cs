@@ -6,9 +6,10 @@ namespace ShopManagementSystem
     {
         public static void WriteTitle(string text)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(text);
-            Console.WriteLine("-----------------------");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine($"  {text}");
+            Console.WriteLine("-------------------------------");
             Console.ResetColor();
         }
 
